@@ -1,6 +1,5 @@
 require 'ruby2d'
 
-
 WIDTH = 800
 HEIGHT = 600
 BACKGROUND_COLOR = '#000000'
@@ -25,8 +24,7 @@ class Paddle
   attr_accessor :score
 
   def initialize(direction)
-    @direction = direction
-    @x = @direction == 'left' ? 30 : WIDTH - 30
+    @x = direction == 'left' ? 30 : WIDTH - 30
     @y = HEIGHT / 2
     @score = 0
   end 
@@ -44,13 +42,13 @@ class Paddle
   end 
 
   def hitbox
-    (@y-15..@y+15)
+    (@y-20..@y+20)
   end 
 
   def track_ball(ball)
-    if ball.y < @y
+    if ball.y <= @y
       move_up
-    else 
+    elsif ball.y >= @y 
       move_down
     end 
   end 
@@ -105,10 +103,8 @@ player   = Paddle.new('left')
 opponent = Paddle.new('right')
 ball     = Ball.new 
  
-
 update do
   clear
-
   draw_dotted_line
   draw_players_score(player, opponent)
 
@@ -132,7 +128,6 @@ update do
   end 
 
 end 
-
 
 on :key_held do |event|
   if event.key == 'up'
