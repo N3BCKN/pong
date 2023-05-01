@@ -46,10 +46,18 @@ class Paddle
   def hitbox
     (@y-15..@y+15)
   end 
+
+  def track_ball(ball)
+    if ball.y > @y
+      move_up
+    else 
+      move_down
+    end 
+  end 
 end 
 
 class Ball
-  attr_reader :x
+  attr_reader :x, :y
 
   def initialize
     @x = WIDTH / 2
@@ -107,6 +115,8 @@ update do
   opponent.draw
   ball.draw
   ball.move
+
+  opponent.track_ball(ball)
 
   ball.hit_paddle?(player, opponent)
 
