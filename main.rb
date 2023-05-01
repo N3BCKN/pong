@@ -23,16 +23,17 @@ class Paddle
   end 
 
   def draw
-    # Line.new(x1: @x1, x2: @x1, y1: @y1, y2: @y2, width: 7, color: LINE_COLOR)
     Rectangle.new(x: @x, y: @y, width: 7, height: 30, color: LINE_COLOR)
   end 
 
   def move_up
     @y = (@y - 7).clamp(0, HEIGHT)
+    p @y
   end 
 
   def move_down
     @y = (@y + 7).clamp(0, HEIGHT)
+    p @y
   end 
 
   private 
