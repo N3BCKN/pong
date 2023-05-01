@@ -4,28 +4,35 @@ require 'ruby2d'
 WIDTH = 800
 HEIGHT = 600
 BACKGROUND_COLOR = '#000000'
-LINE_COLOR = '#FFFFFF'
+BASE_COLOR = '#FFFFFF'
 
 set background: BACKGROUND_COLOR
 set width: WIDTH, height: HEIGHT
 
 def draw_dotted_line
   (0..HEIGHT).step(25) do |i|
-    Line.new(x1: WIDTH/2 , x2: WIDTH/2 , y1: i , y2: i + 10, width: 3 , color: LINE_COLOR)
+    Line.new(x1: WIDTH/2 , x2: WIDTH/2 , y1: i , y2: i + 10, width: 3 , color: BASE_COLOR)
   end 
+end 
+
+def draw_players_score(player, opponent)
+  Text.new(player.score, x: (WIDTH / 2 ) - (WIDTH / 4 ), y: 30, style: 'bold', size: 80, color: BASE_COLOR )
+  Text.new(opponent.score, x: (WIDTH / 2 ) + (WIDTH / 4 ), y: 30, style: 'bold', size: 80, color: BASE_COLOR )
 end 
 
 class Paddle
   attr_reader :x, :y
+  attr_accessor :score
 
   def initialize(direction)
     @direction = direction
     @x = @direction == 'left' ? 30 : WIDTH - 30
-    @y = HEIGHT / 2 
+    @y = HEIGHT / 2
+    @score = 0
   end 
 
   def draw
-    Rectangle.new(x: @x, y: @y, width: 7, height: 30, color: LINE_COLOR)
+    Rectangle.new(x: @x, y: @y, width: 7, height: 30, color: BASE_COLOR)
   end 
 
   def move_up
@@ -39,11 +46,11 @@ class Paddle
   def hitbox
     (@y-15..@y+15)
   end 
-
-  private 
 end 
 
 class Ball
+  attr_reader :x
+
   def initialize
     @x = WIDTH / 2
     @y = HEIGHT  / 2
@@ -51,7 +58,7 @@ class Ball
   end 
 
   def draw
-    Circle.new(x: @x, y: @y, radius: 5, color: LINE_COLOR)
+    Circle.new(x: @x, y: @y, radius: 5, color: BASE_COLOR)
   end 
 
   def move
@@ -74,7 +81,7 @@ class Ball
   def reset_position
     @x = WIDTH / 2
     @y = HEIGHT  / 2
-    @direction = rand > 0.5 ? -1 : 1  
+    @direction = rand < 0.3 ? 1 : -1  
   end 
 
   private
@@ -94,26 +101,22 @@ update do
   clear
 
   draw_dotted_line
+  draw_players_score(player, opponent)
+
   player.draw
   opponent.draw
   ball.draw
   ball.move
 
-  Text.new(
-  'Hello',
-  x: 150, y: 470,
-  font: 'vera.ttf',
-  style: 'bold',
-  size: 20,
-  color: 'blue',
-  rotate: 90,
-  z: 10
-)
-
-
   ball.hit_paddle?(player, opponent)
 
   if ball.over_map?
+    if ball.x == 0 
+      opponent.score += 1
+    elsif ball.x == WIDTH 
+      player.score += 1
+    end 
+
     ball.reset_position
   end 
 
