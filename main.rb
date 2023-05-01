@@ -48,7 +48,7 @@ class Paddle
   end 
 
   def track_ball(ball)
-    if ball.y > @y
+    if ball.y < @y
       move_up
     else 
       move_down
@@ -62,7 +62,8 @@ class Ball
   def initialize
     @x = WIDTH / 2
     @y = HEIGHT  / 2
-    @direction = -1
+    @x_direction = -1
+    @y_direction = -1
   end 
 
   def draw
@@ -72,13 +73,13 @@ class Ball
   def move
     hit_top_or_bottom?
 
-    @x += (5 * @direction)
-    @y += (2 * @direction)
+    @x += (5 * @x_direction)
+    @y += (2 * @y_direction)
   end
 
   def hit_paddle?(player, opponent)
     if (player.hitbox.include?(@y) && @x == 30) || (opponent.hitbox.include?(@y) && @x == WIDTH - 30) 
-      @direction *= -1
+      @x_direction *= -1
     end
   end 
 
@@ -89,13 +90,13 @@ class Ball
   def reset_position
     @x = WIDTH / 2
     @y = HEIGHT  / 2
-    @direction = rand < 0.3 ? 1 : -1  
+    @x_direction = rand < 0.3 ? 1 : -1  
   end 
 
   private
   def hit_top_or_bottom?
     if @y >= HEIGHT || @y <= 0 
-      @direction *= -1
+      @y_direction *= -1
     end 
   end 
 end 
