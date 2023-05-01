@@ -1,5 +1,6 @@
 require 'ruby2d'
 
+
 WIDTH = 800
 HEIGHT = 600
 BACKGROUND_COLOR = '#000000'
@@ -48,7 +49,7 @@ class Paddle
   def track_ball(ball)
     if ball.y <= @y
       move_up
-    elsif ball.y >= @y 
+    elsif ball.y >= @y  
       move_down
     end 
   end 
@@ -103,8 +104,10 @@ player   = Paddle.new('left')
 opponent = Paddle.new('right')
 ball     = Ball.new 
  
+
 update do
   clear
+
   draw_dotted_line
   draw_players_score(player, opponent)
 
@@ -128,6 +131,7 @@ update do
   end 
 
 end 
+
 
 on :key_held do |event|
   if event.key == 'up'
