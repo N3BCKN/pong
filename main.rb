@@ -27,23 +27,35 @@ class Paddle
   end 
 
   def move_up
-    @y = (@y - 7).clamp(0, HEIGHT)
-    p @y
+    @y = (@y - 7).clamp(0, HEIGHT * 0.93)
   end 
 
   def move_down
-    @y = (@y + 7).clamp(0, HEIGHT)
-    p @y
+    @y = (@y + 7).clamp(0, HEIGHT * 0.93)
   end 
 
   private 
 end 
 
-# class Ball
-# end 
+class Ball
+  def initialize
+    @x = WIDTH / 2
+    @y = HEIGHT  / 2 
+  end 
 
-player = Paddle.new('left')
+  def draw
+    Circle.new(x: @x, y: @y, radius: 5, color: LINE_COLOR)
+  end 
+
+  def move
+  end
+
+
+end 
+
+player   = Paddle.new('left')
 opponent = Paddle.new('rights')
+ball     = Ball.new 
  
 
 update do
@@ -52,7 +64,7 @@ update do
   draw_dotted_line
   player.draw
   opponent.draw
-
+  ball.draw
 end 
 
 
