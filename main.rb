@@ -16,6 +16,8 @@ def draw_dotted_line
 end 
 
 class Paddle
+  attr_reader :x, :y
+
   def initialize(direction)
     @direction = direction
     @x = @direction == 'left' ? 30 : WIDTH - 30
@@ -34,13 +36,18 @@ class Paddle
     @y = (@y + 7).clamp(0, HEIGHT * 0.93)
   end 
 
+  def hitbox
+    (@y-15..@y+15)
+  end 
+
   private 
 end 
 
 class Ball
   def initialize
     @x = WIDTH / 2
-    @y = HEIGHT  / 2 
+    @y = HEIGHT  / 2
+    @direction = -1
   end 
 
   def draw
@@ -48,13 +55,38 @@ class Ball
   end 
 
   def move
+    hit_top_or_bottom?
+
+    @x += (5 * @direction)
+    @y += (2 * @direction)
   end
 
+  def hit_paddle?(player, opponent)
+    if (player.hitbox.include?(@y) && @x == 30) || (opponent.hitbox.include?(@y) && @x == WIDTH - 30) 
+      @direction *= -1
+    end
+  end 
 
+  def over_map?
+    @x >= WIDTH || @x <= 0 
+  end 
+
+  def reset_position
+    @x = WIDTH / 2
+    @y = HEIGHT  / 2
+    @direction = rand > 0.5 ? -1 : 1  
+  end 
+
+  private
+  def hit_top_or_bottom?
+    if @y >= HEIGHT || @y <= 0 
+      @direction *= -1
+    end 
+  end 
 end 
 
 player   = Paddle.new('left')
-opponent = Paddle.new('rights')
+opponent = Paddle.new('right')
 ball     = Ball.new 
  
 
@@ -65,6 +97,15 @@ update do
   player.draw
   opponent.draw
   ball.draw
+  ball.move
+
+
+  ball.hit_paddle?(player, opponent)
+
+  if ball.over_map?
+    ball.reset_position
+  end 
+
 end 
 
 
