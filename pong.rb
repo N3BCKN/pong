@@ -8,6 +8,7 @@ BASE_COLOR = '#FFFFFF'
 
 set background: BACKGROUND_COLOR
 set width: WIDTH, height: HEIGHT
+set title: 'pong'
 
 def draw_dotted_line
   (0..HEIGHT).step(25) do |i|
