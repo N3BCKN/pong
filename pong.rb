@@ -1,6 +1,5 @@
 require 'ruby2d'
 
-
 WIDTH = 800
 HEIGHT = 600
 BACKGROUND_COLOR = '#000000'
@@ -43,10 +42,6 @@ class Paddle
     @y = (@y + 7).clamp(0, HEIGHT * 0.93)
   end 
 
-  def hitbox
-    (@y-20..@y+20)
-  end 
-
   def track_ball(ball)
     if ball.y <= @y
       move_up
@@ -78,7 +73,8 @@ class Ball
   end
 
   def hit_paddle?(player, opponent)
-    if (player.hitbox.include?(@y) && @x == 30) || (opponent.hitbox.include?(@y) && @x == WIDTH - 30) 
+
+    if player.draw.contains?(@x, @y) || opponent.draw.contains?(@x, @y)
       @x_direction *= -1
     end
   end 
