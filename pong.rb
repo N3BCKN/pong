@@ -20,6 +20,10 @@ def draw_players_score(player, opponent)
   Text.new(opponent.score, x: (WIDTH / 2 ) + (WIDTH / 4 ), y: 30, style: 'bold', size: 80, color: BASE_COLOR )
 end 
 
+def play_sound(name)
+  sound = Sound.new("./assets/sounds/#{name}.wav").play
+end
+
 class Paddle
   attr_reader :x, :y
   attr_accessor :score
@@ -35,14 +39,16 @@ class Paddle
   end 
 
   def move_up
-    @y = (@y - 7).clamp(0, HEIGHT * 0.93)
+    @y = (@y - 10).clamp(0, HEIGHT)
   end 
 
   def move_down
-    @y = (@y + 7).clamp(0, HEIGHT * 0.93)
+    @y = (@y + 10).clamp(0, HEIGHT)
   end 
 
-  def track_ball(ball)
+  def track_ball(ball, last_hit_frame)
+    return unless last_hit_frame + 30 <= Window.frames
+
     if ball.y <= @y
       move_up
     elsif ball.y >= @y  
@@ -73,10 +79,11 @@ class Ball
   end
 
   def hit_paddle?(player, opponent)
-
     if player.draw.contains?(@x, @y) || opponent.draw.contains?(@x, @y)
       @x_direction *= -1
-    end
+      play_sound('paddle')
+      return true
+    end 
   end 
 
   def over_map?
@@ -92,6 +99,7 @@ class Ball
   private
   def hit_top_or_bottom?
     if @y >= HEIGHT || @y <= 0 
+      play_sound('wall')
       @y_direction *= -1
     end 
   end 
@@ -99,9 +107,9 @@ end
 
 player   = Paddle.new('left')
 opponent = Paddle.new('right')
-ball     = Ball.new 
+ball     = Ball.new
+last_hit_frame = 0
  
-
 update do
   clear
 
@@ -113,9 +121,11 @@ update do
   ball.draw
   ball.move
 
-  opponent.track_ball(ball)
+  opponent.track_ball(ball, last_hit_frame)
 
-  ball.hit_paddle?(player, opponent)
+  if ball.hit_paddle?(player, opponent)
+    last_hit_frame = Window.frames
+  end
 
   if ball.over_map?
     if ball.x == 0 
@@ -124,6 +134,7 @@ update do
       player.score += 1
     end 
 
+    play_sound('score')
     ball.reset_position
   end 
 
