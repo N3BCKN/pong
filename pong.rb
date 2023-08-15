@@ -22,7 +22,7 @@ end
 
 class Paddle
   attr_reader :x, :y
-  attr_accessor :score
+  attr_accessor :score, :shape
 
   def initialize(direction)
     @x = direction == 'left' ? 30 : WIDTH - 30
@@ -31,7 +31,7 @@ class Paddle
   end 
 
   def draw
-    Rectangle.new(x: @x, y: @y, width: 7, height: 30, color: BASE_COLOR)
+    @shape = Rectangle.new(x: @x, y: @y, width: 7, height: 30, color: BASE_COLOR)
   end 
 
   def move_up
@@ -73,8 +73,7 @@ class Ball
   end
 
   def hit_paddle?(player, opponent)
-
-    if player.draw.contains?(@x, @y) || opponent.draw.contains?(@x, @y)
+    if player.shape.contains?(@x, @y) || opponent.shape.contains?(@x, @y)
       @x_direction *= -1
     end
   end 
