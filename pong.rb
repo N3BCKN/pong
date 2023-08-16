@@ -34,11 +34,11 @@ class Paddle
   end 
 
   def move_up
-    @y = (@y - 10).clamp(0, HEIGHT)
+    @y = (@y - 10).clamp(0, HEIGHT * 0.93)
   end 
 
   def move_down
-    @y = (@y + 10).clamp(0, HEIGHT)
+    @y = (@y + 10).clamp(0, HEIGHT * 0.93)
   end 
 
   def track_ball(ball_y, last_hit_frame)
