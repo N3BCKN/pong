@@ -15,13 +15,12 @@ def draw_dotted_line
   end 
 end 
 
-def draw_players_score(player, opponent)
-  Text.new(player.score, x: (WIDTH / 2 ) - (WIDTH / 4 ), y: 30, style: 'bold', size: 80, color: BASE_COLOR )
-  Text.new(opponent.score, x: (WIDTH / 2 ) + (WIDTH / 4 ), y: 30, style: 'bold', size: 80, color: BASE_COLOR )
+def draw_players_score(player_score, opponent_score)
+  Text.new(player_score, x: (WIDTH / 2 ) - (WIDTH / 4 ), y: 30, style: 'bold', size: 80, color: BASE_COLOR )
+  Text.new(opponent_score, x: (WIDTH / 2 ) + (WIDTH / 4 ), y: 30, style: 'bold', size: 80, color: BASE_COLOR )
 end 
 
 class Paddle
-  attr_reader :x, :y
   attr_accessor :score, :shape
 
   def initialize(direction)
@@ -42,14 +41,14 @@ class Paddle
     @y = (@y + 7).clamp(0, HEIGHT * 0.93)
   end 
 
-  def track_ball(ball)
-    if ball.y <= @y
+  def track_ball(ball_y)
+    if ball_y <= @y
       move_up
-    elsif ball.y >= @y  
+    elsif ball_y >= @y  
       move_down
     end 
   end 
-end 
+end
 
 class Ball
   attr_reader :x, :y
@@ -62,7 +61,7 @@ class Ball
   end 
 
   def draw
-    Circle.new(x: @x, y: @y, radius: 5, color: BASE_COLOR)
+    @shape = Circle.new(x: @x, y: @y, radius: 5, color: BASE_COLOR)
   end 
 
   def move
@@ -98,21 +97,20 @@ end
 
 player   = Paddle.new('left')
 opponent = Paddle.new('right')
-ball     = Ball.new 
- 
+ball     = Ball.new
 
 update do
   clear
 
   draw_dotted_line
-  draw_players_score(player, opponent)
+  draw_players_score(player.score, opponent.score)
 
   player.draw
   opponent.draw
   ball.draw
   ball.move
 
-  opponent.track_ball(ball)
+  opponent.track_ball(ball.y)
 
   ball.hit_paddle?(player, opponent)
 
@@ -125,9 +123,7 @@ update do
 
     ball.reset_position
   end 
-
 end 
-
 
 on :key_held do |event|
   if event.key == 'up'
