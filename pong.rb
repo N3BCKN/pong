@@ -34,14 +34,16 @@ class Paddle
   end 
 
   def move_up
-    @y = (@y - 7).clamp(0, HEIGHT * 0.93)
+    @y = (@y - 10).clamp(0, HEIGHT)
   end 
 
   def move_down
-    @y = (@y + 7).clamp(0, HEIGHT * 0.93)
+    @y = (@y + 10).clamp(0, HEIGHT)
   end 
 
-  def track_ball(ball_y)
+  def track_ball(ball_y, last_hit_frame)
+    return unless last_hit_frame + 30 <= Window.frames
+
     if ball_y <= @y
       move_up
     elsif ball_y >= @y  
@@ -74,7 +76,8 @@ class Ball
   def hit_paddle?(player, opponent)
     if player.shape.contains?(@x, @y) || opponent.shape.contains?(@x, @y)
       @x_direction *= -1
-    end
+      return true
+    end 
   end 
 
   def over_map?
@@ -98,7 +101,8 @@ end
 player   = Paddle.new('left')
 opponent = Paddle.new('right')
 ball     = Ball.new
-
+last_hit_frame = 0
+ 
 update do
   clear
 
@@ -110,9 +114,11 @@ update do
   ball.draw
   ball.move
 
-  opponent.track_ball(ball.y)
+  opponent.track_ball(ball.y, last_hit_frame)
 
-  ball.hit_paddle?(player, opponent)
+  if ball.hit_paddle?(player, opponent)
+    last_hit_frame = Window.frames
+  end
 
   if ball.over_map?
     if ball.x == 0 
